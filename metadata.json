@@ -1,0 +1,7 @@
+{
+  "name": "SignPlus - Assinatura Digital ICP-Brasil",
+  "description": "Uma plataforma completa para assinatura digital de PDFs e XMLs, gestão de certificados A1/A3 e personalização de selos de assinatura em conformidade com os padrões ICP-Brasil.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
