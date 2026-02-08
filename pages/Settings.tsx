@@ -1,12 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { googleDriveService } from '../services/googleDriveService';
+import { useSignPlusAuth } from '../hooks/useSignPlusAuth';
 
 interface SettingsProps {
   notify?: (m: string, t?: any) => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({ notify }) => {
+  const { accessToken } = useSignPlusAuth();
   const DEFAULT_ACCOUNT_ID = '100760b1eff565953622066c0721';
   const DEFAULT_API_KEY = 'WdVdS-JOtwm1iSr9c5gXsj-eflYe56lU3JCMdR0uXZTD9x5HRaux4nS7eMREjPI';
 
@@ -48,6 +50,25 @@ const Settings: React.FC<SettingsProps> = ({ notify }) => {
         <p className="text-slate-500 font-medium">Gerencie sua conexão com a nuvem Assinafy e Google Drive.</p>
       </header>
 
+      {/* Auth0 JWT Section */}
+      <section className="bg-slate-900 rounded-[2rem] border border-slate-800 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-4">
+        <div className="p-6 border-b border-slate-800 bg-slate-950/50 flex items-center justify-between">
+          <h3 className="font-black text-white flex items-center gap-2 uppercase text-xs tracking-widest">
+            <span className="text-blue-500">🛡️</span> Auth0 JWT Session
+          </h3>
+          <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[9px] font-black uppercase">Bearer Active</span>
+        </div>
+        <div className="p-8 space-y-4">
+          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Access Token (JWT)</label>
+          <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 font-mono text-[10px] text-blue-300 break-all leading-relaxed shadow-inner max-h-32 overflow-y-auto custom-scrollbar">
+            {accessToken || "Modo Desenvolvedor Ativo - Token Não Disponível"}
+          </div>
+          <p className="text-[9px] text-slate-600 font-medium italic">
+            * Este token identifica sua sessão segura e pode ser usado para validar chamadas em APIs protegidas.
+          </p>
+        </div>
+      </section>
+
       <section className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-100 bg-indigo-50/30 flex items-center justify-between">
           <h3 className="font-black text-slate-800 flex items-center gap-2 uppercase text-xs tracking-widest">
@@ -79,13 +100,6 @@ const Settings: React.FC<SettingsProps> = ({ notify }) => {
               />
               <p className="text-[9px] text-slate-400 mt-2 font-medium italic">* Gerada na aba 'API' em configurações de conta.</p>
             </div>
-          </div>
-          
-          <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3">
-            <span className="text-blue-500 mt-0.5">ℹ️</span>
-            <p className="text-[11px] text-blue-700 leading-relaxed">
-              <strong>Nota Técnica:</strong> Nossa plataforma utiliza o cabeçalho <code>X-Api-Key</code> para autenticação segura. Certifique-se de que a chave fornecida possui permissões de <em>Owner</em> ou <em>Admin</em> no Workspace informado.
-            </p>
           </div>
         </div>
       </section>

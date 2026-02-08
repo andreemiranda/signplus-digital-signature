@@ -11,12 +11,18 @@ export const assinafyService = {
 
   async apiCall(method: string, endpoint: string, data?: any) {
     const apiKey = this.getApiKey();
+    const jwtToken = localStorage.getItem('signplus_jwt');
     
-    // Conforme pág 1 e 5 da doc, X-Api-Key é o padrão oficial para integrações backend
+    // Prioriza o JWT se disponível para integração SSO, senão usa X-Api-Key
     const headers: Record<string, string> = {
-      'X-Api-Key': apiKey,
       'Accept': 'application/json'
     };
+
+    if (jwtToken) {
+      headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else {
+      headers['X-Api-Key'] = apiKey;
+    }
 
     const options: RequestInit = {
       method,
@@ -25,7 +31,6 @@ export const assinafyService = {
 
     if (data) {
       if (data instanceof FormData) {
-        // O browser define o Content-Type com boundary automaticamente para FormData
         options.body = data;
       } else {
         headers['Content-Type'] = 'application/json';
@@ -42,19 +47,14 @@ export const assinafyService = {
       if (contentType && contentType.includes("application/json")) {
         result = await response.json();
       } else {
-        // Se não for JSON, pode ser um erro de servidor (500) ou firewall
         const text = await response.text();
-        throw new Error(`Erro Crítico na API (HTTP ${response.status}): Resposta não-JSON recebida.`);
+        throw new Error(`Erro Crítico na API (HTTP ${response.status})`);
       }
 
-      // Verificação de status interno do payload (Páginas 1 e 2)
       const internalStatus = result.status || response.status;
 
       if (!response.ok || (internalStatus >= 400)) {
-        if (internalStatus === 401 || internalStatus === 403) {
-          throw new Error('Falha de Autenticação Assinafy: Verifique se sua API Key é válida para este ambiente.');
-        }
-        throw new Error(result.message || result.error || `Falha na requisição (Status ${internalStatus})`);
+        throw new Error(result.message || result.error || `Falha na requisição (${internalStatus})`);
       }
 
       return result;
@@ -65,14 +65,12 @@ export const assinafyService = {
   },
 
   async uploadDocument(accountId: string, file: File) {
-    // Endpoint: POST /accounts/:account_id/documents (Página 3)
     const formData = new FormData();
     formData.append('file', file);
     return this.apiCall('POST', `/accounts/${accountId}/documents`, formData);
   },
 
   async createSigner(accountId: string, signerData: { fullName: string, email: string, whatsapp?: string }) {
-    // Endpoint: POST /accounts/:account_id/signers (Páginas 4 e 7)
     return this.apiCall('POST', `/accounts/${accountId}/signers`, {
       full_name: signerData.fullName,
       email: signerData.email,
@@ -81,7 +79,6 @@ export const assinafyService = {
   },
 
   async createAssignment(documentId: string, signerIds: string[], message?: string) {
-    // Endpoint: POST /documents/:document_id/assignments (Página 4 e 21)
     return this.apiCall('POST', `/documents/${documentId}/assignments`, {
       method: 'virtual',
       signerIds: signerIds, 
@@ -90,7 +87,6 @@ export const assinafyService = {
   },
 
   async listDocuments(accountId: string, status?: string) {
-    // Endpoint: GET /accounts/:account_id/documents (Página 13)
     const query = status ? `?status=${status}` : '';
     return this.apiCall('GET', `/accounts/${accountId}/documents${query}`);
   }

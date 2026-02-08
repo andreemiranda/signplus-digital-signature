@@ -6,32 +6,34 @@ export const validateEnv = () => {
     'VITE_AUTH0_AUDIENCE'
   ];
 
-  // Verifica se as chaves existem no process.env
   const missing = required.filter(key => !(process.env as any)[key]);
   
   if (missing.length > 0) {
-    // No ambiente de demonstração ou desenvolvimento local sem .env, 
-    // o sistema utiliza os valores padrão (fallbacks) definidos no App.tsx.
-    // Mudamos de console.error para um log informativo para evitar confusão.
     console.log(
-      "%c[SignPlus] %cUtilizando configurações de autenticação padrão (Demo Mode)",
+      "%c[SignPlus] %cAmbiente de Demonstração Ativo (Configurações parciais)",
       "color: #2563eb; font-weight: bold;",
       "color: #64748b; font-weight: medium;"
     );
   } else {
     console.log(
-      "%c[SignPlus] %cAmbiente de produção validado com sucesso",
+      "%c[SignPlus] %cConfigurações de Produção Carregadas",
       "color: #10b981; font-weight: bold;",
       "color: #64748b; font-weight: medium;"
     );
   }
 };
 
+/**
+ * Retorna a URL de redirecionamento absoluta dinâmica.
+ * O Auth0 exige correspondência EXATA. Esta função garante que a URL 
+ * termine sempre com "/" para bater com o cadastro no dashboard.
+ */
 export const getRedirectUri = () => {
-  // Prioriza a variável de ambiente, senão usa a origem atual formatada
+  // Se houver uma variável de ambiente definida, usa ela mas garante a barra final
   const envUri = (process.env as any).VITE_AUTH0_REDIRECT_URI;
   if (envUri) return envUri.endsWith('/') ? envUri : `${envUri}/`;
   
+  // Caso contrário, gera dinamicamente a partir da origem atual (localhost ou netlify)
   const origin = window.location.origin;
   return origin.endsWith('/') ? origin : `${origin}/`;
 };

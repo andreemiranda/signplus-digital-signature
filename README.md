@@ -1,46 +1,39 @@
 
 # SignPlus - Enterprise Digital Signature Platform 🇧🇷
 
-![Auth](https://img.shields.io/badge/Auth-Auth0-orange)
-![Deploy](https://img.shields.io/badge/Deploy-Netlify-00ad9f)
+## 🛠️ Configurações Críticas do Auth0
 
-## 🛠️ Configuração Obrigatória no Auth0 (Painel Web)
+Para resolver o erro de "Callback URL mismatch", preencha o painel do Auth0 ([manage.auth0.com](https://manage.auth0.com/)) seguindo este padrão dinâmico. O app agora força o uso da barra final `/` para garantir compatibilidade.
 
-Para que o login funcione em produção e localmente sem erros de "Callback URL mismatch", preencha os campos no seu Dashboard Auth0 ([manage.auth0.com](https://manage.auth0.com/)) exatamente como abaixo:
+### 1. URLs de Aplicação (Copie e Cole)
 
-### 1. Application URIs
-- **Application Login URI**: 
-  `https://signplus-digital-signature.netlify.app/`
-- **Allowed Callback URLs**: 
-  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Allowed Logout URLs**: 
-  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Allowed Web Origins**: 
-  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
+**Allowed Callback URLs**
+```text
+http://localhost:3000/, https://signplus-digital-signature.netlify.app/
+```
 
-### 2. Canais de Logout e Verificação
-- **Back-Channel Logout URI**: 
-  `https://signplus-digital-signature.netlify.app/`
-- **Allowed Origins (CORS)**: 
-  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Cross-Origin Verification Fallback URL**: 
-  `https://signplus-digital-signature.netlify.app/`
+**Allowed Logout URLs**
+```text
+http://localhost:3000/, https://signplus-digital-signature.netlify.app/
+```
 
----
+**Allowed Web Origins**
+```text
+http://localhost:3000/, https://signplus-digital-signature.netlify.app/
+```
 
-## 🔐 Credenciais de Teste (Válidas em Produção)
-
-Para acessar o sistema sem passar pelo fluxo real do Auth0 (ou para testes rápidos), utilize o botão **"Acesso Desenvolvedor (Mock)"** na tela de login.
-
-- **Usuário Simulado**: `admin@signplus.test`
-- **Senha Simulada**: `SignPlus@Dev2026`
-
-Se você optar pelo login real via Auth0, certifique-se de configurar as conexões (Google, Social ou Database) no seu Tenant.
+### 2. Configurações de API (JWT)
+- No menu **Applications -> Settings**, role até o final e configure o **Application Login URI**: `https://signplus-digital-signature.netlify.app/`.
+- O app agora captura o **Access Token (JWT)** automaticamente. Você pode visualizá-lo na aba "Configurações" do sistema após o login.
 
 ---
 
-## ✨ Tecnologias
-- **Frontend**: React 19 + Tailwind CSS
-- **IA**: Google Gemini 3 Pro (Perícia Forense) e Gemini 3 Flash (Assistente)
-- **Auth**: Auth0 SDK (SSO Híbrido)
-- **Cloud**: Google Drive API + Assinafy SDK
+## 🔐 Modo Desenvolvedor (Mock)
+
+Se desejar testar o sistema sem configurar o Auth0, clique no botão azul piscante na tela de login: **"Acesso Desenvolvedor (Mock)"**.
+- Isso criará uma sessão local simulada com privilégios de administrador.
+
+---
+
+## ✨ Arquitetura de Navegação
+O app utiliza **Hash Routing** (`/#aba`). Isso permite que você navegue entre as funcionalidades sem que o servidor precise de configurações complexas de redirecionamento, mantendo o domínio base limpo para a integração com provedores de identidade.
