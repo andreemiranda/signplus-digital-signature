@@ -3,40 +3,44 @@
 
 ![Auth](https://img.shields.io/badge/Auth-Auth0-orange)
 ![Deploy](https://img.shields.io/badge/Deploy-Netlify-00ad9f)
-![IA](https://img.shields.io/badge/AI-Gemini--3--Pro-blue)
 
-## 🔐 Credenciais de Teste (Homologação)
+## 🛠️ Configuração Obrigatória no Auth0 (Painel Web)
 
-Para testes rápidos em ambiente de desenvolvimento ou produção:
-
-- **Email**: `admin@signplus.test`
-- **Senha**: `SignPlus@Dev2026`
-
-> **Dica de Dev**: O botão **"Acesso Desenvolvedor (Mock)"** na tela de login permite ignorar o Auth0 para testes locais rápidos.
-
----
-
-## 🛠️ Guia de Configuração Auth0 (Produção)
-
-Para que o login funcione corretamente em `https://signplus-digital-signature.netlify.app/`, configure os seguintes campos no seu painel Auth0:
+Para que o login funcione em produção e localmente sem erros de "Callback URL mismatch", preencha os campos no seu Dashboard Auth0 ([manage.auth0.com](https://manage.auth0.com/)) exatamente como abaixo:
 
 ### 1. Application URIs
-- **Application Login URI**: `https://signplus-digital-signature.netlify.app/`
-- **Allowed Callback URLs**: `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Allowed Logout URLs**: `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Allowed Web Origins**: `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Back-Channel Logout URI**: `https://signplus-digital-signature.netlify.app/`
+- **Application Login URI**: 
+  `https://signplus-digital-signature.netlify.app/`
+- **Allowed Callback URLs**: 
+  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
+- **Allowed Logout URLs**: 
+  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
+- **Allowed Web Origins**: 
+  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
 
-### 2. Cross-Origin Verification
-- **Allowed Origins (CORS)**: `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
-- **Cross-Origin Verification Fallback URL**: `https://signplus-digital-signature.netlify.app/`
+### 2. Canais de Logout e Verificação
+- **Back-Channel Logout URI**: 
+  `https://signplus-digital-signature.netlify.app/`
+- **Allowed Origins (CORS)**: 
+  `https://signplus-digital-signature.netlify.app/, http://localhost:3000/`
+- **Cross-Origin Verification Fallback URL**: 
+  `https://signplus-digital-signature.netlify.app/`
 
 ---
 
-## ✨ Funcionalidades Ativas
-- **Login Unificado**: Integração via Auth0 (Google, Microsoft, Email).
-- **Assinatura Digital**: Suporte a PAdES (PDF) e XAdES (XML).
-- **IA Forense**: Explicações técnicas de assinaturas via Gemini 3 Pro.
-- **Nuvem**: Integração direta com Assinafy Cloud e Google Drive.
+## 🔐 Credenciais de Teste (Válidas em Produção)
 
-**Endereço do App**: [https://signplus-digital-signature.netlify.app/](https://signplus-digital-signature.netlify.app/)
+Para acessar o sistema sem passar pelo fluxo real do Auth0 (ou para testes rápidos), utilize o botão **"Acesso Desenvolvedor (Mock)"** na tela de login.
+
+- **Usuário Simulado**: `admin@signplus.test`
+- **Senha Simulada**: `SignPlus@Dev2026`
+
+Se você optar pelo login real via Auth0, certifique-se de configurar as conexões (Google, Social ou Database) no seu Tenant.
+
+---
+
+## ✨ Tecnologias
+- **Frontend**: React 19 + Tailwind CSS
+- **IA**: Google Gemini 3 Pro (Perícia Forense) e Gemini 3 Flash (Assistente)
+- **Auth**: Auth0 SDK (SSO Híbrido)
+- **Cloud**: Google Drive API + Assinafy SDK

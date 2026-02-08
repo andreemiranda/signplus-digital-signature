@@ -1,59 +1,47 @@
 
 import { GoogleGenAI } from "@google/genai";
+import { logger } from "../utils/logger";
 
 export const geminiService = {
   /**
    * Explica o resultado da validação técnica usando o modelo Gemini 3 Pro.
-   * Complex Text Task (advanced reasoning)
    */
   async explainValidation(documentInfo: string, validationResult: any) {
     try {
-      // Fix: Use process.env.API_KEY exclusively and create a new instance right before making an API call
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-pro-preview',
-        contents: `Como perito digital especializado em ICP-Brasil, analise o seguinte resultado de validação técnica:
-        - Documento: ${documentInfo}
-        - Dados Técnicos: ${JSON.stringify(validationResult)}
+        contents: `Analise como perito forense ICP-Brasil:
+        Doc: ${documentInfo}
+        Resultado: ${JSON.stringify(validationResult)}
         
-        Explique se o documento possui validade jurídica plena de acordo com a MP 2.200-2/2001 e a Lei 14.063/2020.`,
+        Explique a validade jurídica (MP 2.200-2/2001) e integridade criptográfica.`,
         config: {
-          thinkingConfig: { thinkingBudget: 2000 }
+          thinkingConfig: { thinkingBudget: 4000 }
         }
       });
-      // Fix: Access the .text property directly instead of calling a method
-      return response.text || "Não foi possível gerar a explicação técnica.";
+      return response.text || "Análise técnica indisponível no momento.";
     } catch (error) {
-      console.error("Gemini Error:", error);
-      return "Ocorreu um erro na análise de IA. Verifique a conexão.";
+      logger.error("Falha na IA Forense", error);
+      return "Erro na análise de IA. Verifique as credenciais da API Gemini.";
     }
   },
 
   /**
-   * Assistente técnico para dúvidas sobre o sistema e assinaturas digitais usando Gemini 3 Flash.
-   * Basic Text Task (simple Q&A)
+   * Assistente técnico usando Gemini 3 Flash para Q&A rápido.
    */
-  async askAssistant(userMessage: string, context?: string) {
+  async askAssistant(userMessage: string) {
     try {
-      // Fix: Use process.env.API_KEY exclusively and create a new instance right before making an API call
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Você é o SignPlus AI, um assistente técnico especialista em assinaturas digitais, criptografia e integração com a API Assinafy.
-        
-        Contexto Atual:
-        - O app utiliza a API v1 da Assinafy.
-        - Autenticação via cabeçalho 'X-Api-Key'.
-        - Endpoints principais envolvem /accounts/:id/documents e /documents/:id/assignments.
-        - O usuário pode estar tendo problemas de 401 (Auth) ou 400 (Payload).
-        
-        Pergunta do usuário: ${userMessage}`,
+        contents: `Você é o SignPlus AI. Ajude o usuário com: ${userMessage}. 
+        Contexto: Plataforma de assinatura digital ICP-Brasil e Nuvem Assinafy.`,
       });
-      // Fix: Access the .text property directly instead of calling a method
-      return response.text || "Peço desculpas, mas não consegui processar sua dúvida agora.";
+      return response.text || "Não consegui processar sua dúvida.";
     } catch (error) {
-      console.error("Assistant Error:", error);
-      return "Assistente temporariamente indisponível.";
+      logger.error("Falha no Assistente AI", error);
+      return "Assistente offline.";
     }
   }
 };

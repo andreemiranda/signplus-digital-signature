@@ -89,28 +89,40 @@ const SignDocument: React.FC<SignDocumentProps> = ({ notify }) => {
       );
     }
 
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('pt-BR');
+    // Fix: Using valid 'numeric' or '2-digit' values for hour and minute options in toLocaleTimeString
+    const formattedTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
     return (
       <div 
-        className="absolute p-4 border-2 shadow-2xl rounded-xl animate-in zoom-in bg-white" 
+        className="absolute p-3 border-2 shadow-2xl rounded-xl animate-in zoom-in bg-white overflow-hidden" 
         style={{ 
           bottom: '8%', 
           right: '8%', 
-          width: '180px', 
+          width: '200px', 
           borderColor: seal.template.borderColor,
           backgroundColor: seal.template.backgroundColor
         }}
       >
+        <div className="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
         {seal.watermarkImage && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
-            <img src={seal.watermarkImage} alt="WM" className="max-w-[80%] max-h-[80%] object-contain" style={{ opacity: seal.watermarkOpacity }} />
+          <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+            <img src={seal.watermarkImage} alt="WM" className="max-w-[70%] max-h-[70%] object-contain" style={{ opacity: seal.watermarkOpacity }} />
           </div>
         )}
-        <div className="relative z-10">
-          <p className="text-[8px] font-black text-blue-600 uppercase mb-1">Assinado por:</p>
+        <div className="relative z-10 space-y-1">
+          <p className="text-[7px] font-black text-blue-600 uppercase">Assinado digitalmente por:</p>
           <p className="text-[10px] truncate font-bold text-slate-800 leading-tight">
             {selectedCert?.subjectName || 'NOME DO SIGNATÁRIO'}
           </p>
-          <p className="text-[7px] text-slate-400 font-bold mt-2 uppercase tracking-widest">ICP-BRASIL VERIFIED</p>
+          <div className="pt-1 border-t border-slate-100 flex justify-between items-end">
+            <div>
+              <p className="text-[7px] text-slate-400 font-black uppercase">Data da Assinatura:</p>
+              <p className="text-[9px] text-slate-700 font-bold">{formattedDate} {formattedTime}</p>
+            </div>
+            <div className="text-[6px] text-white bg-blue-600 px-1.5 py-0.5 rounded font-black uppercase tracking-tighter">ICP-Brasil</div>
+          </div>
         </div>
       </div>
     );
