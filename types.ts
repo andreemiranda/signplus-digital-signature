@@ -41,6 +41,10 @@ export interface SignatureSeal {
   name: string;
   isNative: boolean;
   isDefault: boolean;
+  useCustomImageOnly: boolean; // Se true, ignora campos e cores, usa apenas a imagem enviada
+  customSealImage?: string; // Base64 da imagem do selo completo
+  watermarkImage?: string; // Base64 da marca d'água
+  watermarkOpacity: number;
   template: {
     width: number;
     height: number;
@@ -63,7 +67,7 @@ export interface SignedDocument {
   signedAt: string;
   status: 'VALID' | 'EXPIRED' | 'REVOKED' | 'INVALID';
   signerName: string;
-  isBackedUp?: boolean; // Indica se foi para o Google Drive
+  isBackedUp?: boolean;
   driveFileId?: string;
 }
 

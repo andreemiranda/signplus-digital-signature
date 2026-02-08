@@ -16,6 +16,9 @@ export const INITIAL_SEALS: SignatureSeal[] = [
     name: 'Selo Padrão ICP-Brasil',
     isNative: true,
     isDefault: true,
+    // Fix: Adding missing properties required by SignatureSeal interface
+    useCustomImageOnly: false,
+    watermarkOpacity: 0.0,
     template: {
       width: 250,
       height: 100,

@@ -24,7 +24,7 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
     const interval = setInterval(() => {
       const currentId = localStorage.getItem('assinafy_account_id') || '';
       if (currentId !== accountId) setAccountId(currentId);
-    }, 2000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [accountId]);
 
@@ -43,7 +43,7 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
     } catch (err: any) {
       console.error("LoadDocs Error:", err.message);
       notify(err.message, 'error');
-      setDocuments([]); // Limpa a lista em caso de erro de credenciais
+      setDocuments([]); 
     } finally {
       setLoading(false);
     }
@@ -87,17 +87,30 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
     }
   };
 
+  const handleGoToSettings = () => {
+    window.location.hash = 'settings';
+  };
+
   if (!accountId) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 text-center space-y-8 animate-in fade-in">
-        <div className="w-24 h-24 bg-slate-100 rounded-[2rem] flex items-center justify-center text-4xl shadow-inner">☁️</div>
-        <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Assinafy Cloud</h2>
-          <p className="text-slate-500 max-w-sm mt-2 font-medium">Configure seu Account ID para gerenciar documentos na nuvem sem necessidade de tokens físicos.</p>
+      <div className="flex flex-col items-center justify-center py-24 lg:py-48 text-center space-y-10 animate-in fade-in zoom-in duration-700">
+        <div className="relative">
+          <div className="w-32 h-32 bg-indigo-50 rounded-[3rem] flex items-center justify-center text-6xl shadow-inner border border-indigo-100/50 animate-pulse">
+            ☁️
+          </div>
+          <div className="absolute -bottom-2 -right-2 bg-white p-2 rounded-2xl shadow-xl border border-slate-100 text-2xl">
+            🔑
+          </div>
+        </div>
+        <div className="space-y-3">
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Configuração Necessária</h2>
+          <p className="text-slate-500 max-w-sm font-medium leading-relaxed">
+            Para gerenciar documentos na nuvem, você precisa vincular seu <strong>Account ID</strong> e <strong>API Key</strong> da Assinafy nas configurações.
+          </p>
         </div>
         <button 
-          onClick={() => window.location.hash = '#settings'} 
-          className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black shadow-2xl shadow-indigo-100 uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all"
+          onClick={handleGoToSettings} 
+          className="bg-slate-900 text-white px-12 py-5 rounded-2xl font-black shadow-2xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 uppercase text-[10px] tracking-[0.2em]"
         >
           Configurar Credenciais
         </button>
@@ -116,7 +129,7 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
            <button 
             onClick={loadDocs}
             disabled={loading}
-            className="p-4 bg-slate-50 text-slate-600 rounded-2xl hover:bg-slate-100 transition-all shadow-sm"
+            className="p-4 bg-slate-50 text-slate-600 rounded-2xl hover:bg-slate-100 transition-all shadow-sm flex items-center justify-center w-14 h-14"
             title="Sincronizar"
           >
             <span className={loading ? "animate-spin inline-block" : ""}>{loading ? "⏳" : "🔄"}</span>
@@ -133,7 +146,7 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
       <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
         <div className="p-5 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center px-8">
           <h3 className="font-black text-slate-400 text-[10px] uppercase tracking-[0.2em]">Console de Documentos</h3>
-          <span className="text-[10px] bg-white border border-slate-200 text-slate-400 px-3 py-1 rounded-full font-mono font-bold">ID: {accountId.substring(0, 12)}...</span>
+          <span className="text-[10px] bg-white border border-slate-200 text-slate-400 px-3 py-1 rounded-full font-mono font-bold">Workspace: {accountId.substring(0, 12)}...</span>
         </div>
         
         <div className="overflow-x-auto">
@@ -164,7 +177,9 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
                       {doc.status.replace(/_/g, ' ')}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-slate-400 font-medium">{new Date(doc.created_at).toLocaleDateString('pt-BR')}</td>
+                  <td className="px-8 py-6 text-slate-400 font-medium">
+                    {doc.created_at ? new Date(doc.created_at).toLocaleDateString('pt-BR') : 'N/A'}
+                  </td>
                   <td className="px-8 py-6 text-right">
                     <button 
                       disabled={doc.status === 'certificated' || loading}
@@ -201,7 +216,7 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
               <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
               <div className="text-5xl">☁️</div>
               <p className="font-black text-slate-700 text-center px-4">{selectedFile ? selectedFile.name : "Selecionar Arquivo PDF"}</p>
-              <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Limite: 15MB por arquivo</p>
+              <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Limite: 25MB por arquivo</p>
             </div>
             <div className="flex gap-4 mt-10">
               <button onClick={() => setShowUpload(false)} className="flex-1 py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-slate-800 transition-colors">Cancelar</button>
@@ -222,13 +237,14 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center p-4">
           <div className="bg-white rounded-[3rem] w-full max-w-md p-10 shadow-2xl animate-in zoom-in">
             <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Novo Signatário</h3>
-            <p className="text-slate-400 text-xs font-medium mb-8">O convite de assinatura será disparado via e-mail e opcionalmente WhatsApp.</p>
+            <p className="text-slate-400 text-xs font-medium mb-8 leading-relaxed">O convite de assinatura será disparado via e-mail e opcionalmente WhatsApp através do gateway Assinafy.</p>
             
             <div className="space-y-5">
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>
                 <input 
                   type="text" 
+                  placeholder="Ex: João da Silva"
                   value={signerData.fullName}
                   onChange={(e) => setSignerData({...signerData, fullName: e.target.value})}
                   className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-800 mt-1"
@@ -238,16 +254,17 @@ const Assinafy: React.FC<AssinafyProps> = ({ notify }) => {
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">E-mail Corporativo</label>
                 <input 
                   type="email" 
+                  placeholder="joao@empresa.com.br"
                   value={signerData.email}
                   onChange={(e) => setSignerData({...signerData, email: e.target.value})}
                   className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-800 mt-1"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">WhatsApp (DDI+DDD+NÚMERO)</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">WhatsApp (Opcional)</label>
                 <input 
                   type="tel" 
-                  placeholder="+55 00 00000-0000"
+                  placeholder="+55 48 99999-0000"
                   value={signerData.whatsapp}
                   onChange={(e) => setSignerData({...signerData, whatsapp: e.target.value})}
                   className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-800 mt-1"

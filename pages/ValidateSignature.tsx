@@ -137,7 +137,8 @@ const ValidateSignature: React.FC<ValidateSignatureProps> = ({ notify }) => {
             <div className="relative z-10">
               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 mb-6 flex items-center gap-3">
                 <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></span> 
-                Explicação Assistida por IA (Gemini 3 Flash)
+                {/* Fix: Updated model name in label to correctly reflect usage of Gemini 3 Pro */}
+                Explicação Assistida por IA (Gemini 3 Pro)
               </h4>
               <div className="prose prose-invert prose-blue max-w-none text-blue-50/90 text-sm leading-relaxed font-medium">
                 {aiExplanation || 'Codificando análise semântica...'}

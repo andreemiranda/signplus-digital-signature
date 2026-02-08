@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -8,6 +9,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout, user } = useAuth0();
 
   const menuItems = [
     { id: 'dashboard', label: 'Painel de Controle', icon: '📊' },
@@ -63,12 +65,30 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
               }`}
             >
               <span className="text-xl">{item.icon}</span>
-              <span className="font-medium">{item.label}</span>
+              <span className="font-medium text-xs uppercase tracking-widest">{item.label}</span>
             </button>
           ))}
         </nav>
-        <div className="p-4 bg-slate-800/50 text-[10px] text-slate-500 text-center uppercase tracking-widest font-bold">
-          v1.3.0 • Cloud Integrated
+        
+        <div className="p-6 border-t border-slate-800 space-y-4">
+          <div className="flex items-center gap-3">
+             <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700">
+               {user?.picture ? <img src={user.picture} className="w-full h-full object-cover" /> : '👤'}
+             </div>
+             <div className="flex-1 truncate">
+               <p className="text-[10px] font-black text-white truncate">{user?.name}</p>
+               <p className="text-[8px] text-slate-500 font-bold uppercase truncate">{user?.email}</p>
+             </div>
+          </div>
+          <button 
+            onClick={() => logout()}
+            className="w-full py-3 bg-rose-600/10 hover:bg-rose-600 text-rose-500 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
+          >
+            Encerrar Sessão
+          </button>
+          <div className="text-[9px] text-slate-600 text-center uppercase tracking-widest font-bold">
+            v1.4.0 • Auth0 Enabled
+          </div>
         </div>
       </aside>
     </>
