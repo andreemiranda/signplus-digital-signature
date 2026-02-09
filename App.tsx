@@ -21,7 +21,8 @@ const Assinafy = lazy(() => import('./pages/Assinafy'));
 
 const AUTH0_DOMAIN = process.env.VITE_AUTH0_DOMAIN || 'dev-xnsnqu63ecslm3eo.us.auth0.com';
 const AUTH0_CLIENT_ID = process.env.VITE_AUTH0_CLIENT_ID || 'JH8vM3WWZFCRSFdyyjn7W4odBNkInLYH';
-const AUTH0_AUDIENCE = process.env.VITE_AUTH0_AUDIENCE || 'https://signplus-api.com';
+// Alterado: Se não houver variável de ambiente, não envia Audience para evitar erro "Service not found"
+const AUTH0_AUDIENCE = process.env.VITE_AUTH0_AUDIENCE || undefined;
 
 const AppContent: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useSignPlusAuth();
@@ -32,7 +33,6 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     validateEnv();
     const handleHashNav = () => {
-      // Captura o caminho relativo após a barra (#hash)
       const hash = window.location.hash.replace('#', '');
       if (hash) setActiveTab(hash);
     };
@@ -102,9 +102,7 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  // Trata o redirecionamento após o login real no Auth0
   const onRedirectCallback = (appState: any) => {
-    // Retorna para a aba salva no appState ou para o dashboard
     if (appState?.returnTo) {
       window.location.hash = appState.returnTo;
     } else {
@@ -118,7 +116,8 @@ const App: React.FC = () => {
       clientId={AUTH0_CLIENT_ID}
       authorizationParams={{
         redirect_uri: getRedirectUri(),
-        audience: AUTH0_AUDIENCE,
+        // Se AUTH0_AUDIENCE for undefined, o Auth0 não disparará o erro "Service not found"
+        ...(AUTH0_AUDIENCE ? { audience: AUTH0_AUDIENCE } : {}),
         scope: 'openid profile email read:documents write:documents sign:documents'
       }}
       onRedirectCallback={onRedirectCallback}

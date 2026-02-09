@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>SignPlus - Assinador Digital Enterprise</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SignPlus">
+    
+    <!-- Ícones atualizados para a pasta assets/images -->
+    <link rel="apple-touch-icon" href="/assets/images/icon-192.png">
+    <link rel="icon" type="image/png" href="/assets/images/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +26,6 @@
           overflow-x: hidden;
         }
 
-        /* Custom Scrollbar for modern feel */
         .custom-scrollbar::-webkit-scrollbar {
           width: 5px;
           height: 5px;
@@ -30,7 +41,6 @@
           background: #cbd5e1;
         }
 
-        /* Prevent overscroll bounce on iOS */
         html, body {
           overscroll-behavior-y: contain;
         }
@@ -51,6 +61,17 @@
 </head>
 <body class="bg-slate-50 text-slate-900 custom-scrollbar">
     <div id="root"></div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('SignPlus SW registered.', reg.scope);
+                }).catch(err => {
+                    console.log('SignPlus SW registration failed:', err);
+                });
+            });
+        }
+    </script>
 <script type="module" src="/index.tsx"></script>
 </body>
 </html>
