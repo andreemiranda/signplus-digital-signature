@@ -9,17 +9,17 @@ Para resolver o erro de "Callback URL mismatch", preencha o painel do Auth0 ([ma
 
 **Allowed Callback URLs**
 ```text
-http://localhost:3000/, https://signplus-digital-signature.netlify.app/
+http://localhost:5173/, https://signplus-digital-signature.netlify.app/
 ```
 
 **Allowed Logout URLs**
 ```text
-http://localhost:3000/, https://signplus-digital-signature.netlify.app/
+http://localhost:5173/, https://signplus-digital-signature.netlify.app/
 ```
 
 **Allowed Web Origins**
 ```text
-http://localhost:3000/, https://signplus-digital-signature.netlify.app/
+http://localhost:5173/, https://signplus-digital-signature.netlify.app/
 ```
 
 ### 2. Configurações de API (JWT)
